@@ -8,7 +8,7 @@ if (sys.version_info.major, sys.version_info.minor) < (3, 6):
 
 
 class FunctionDescriptor(dict):
-    """ A wrapper for radare2 returned functions, with additions for blocks binary and disassembly and properties
+    """ A wrapper for functions in executables, with additions for blocks binary and disassembly and properties
     for important stuff """
 
     class Keys:
@@ -30,7 +30,7 @@ class FunctionDescriptor(dict):
 
 
 class BlockDescriptor(dict):
-    """ A wrapper for radare2 blocks, with additions and properties for important stuff """
+    """ A wrapper for blocks, with additions and properties for important stuff """
 
     class Keys:
         address = "addr"
