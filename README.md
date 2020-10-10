@@ -20,6 +20,9 @@ I did do a (shallow) comparison to IDA 6.95 by going over all exes in `/bin/` an
 
 The resulsts show that R2 is on par when it comes to run time and finding blocks, but it assigns them to significantly less functions (so i guess IDA is better at finding function..).
 
+![Recovered Bytes](https://github.com/nimrodpar/radare2-python/raw/master/IDA%20v%20R2%20-%20Bytes.png)
+![Run Time](https://github.com/nimrodpar/radare2-python/raw/master/IDA%20v%20R2%20-%20Runtime.png)
+
 EXE| Radare2 Time| IDA Time| Radare2 #Functions| IDA #Functions| Radare2 #Bytes| IDA #Bytes
 ---|---------|-------------|---------------|-------------------|-----------|---------------
 chown| 2.1s| 1.8s| 162| 248| 31870| 31811
