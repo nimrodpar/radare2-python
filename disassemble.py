@@ -8,8 +8,8 @@ if (sys.version_info.major, sys.version_info.minor) < (3, 6):
 
 
 class FunctionDescriptor(dict):
-    """ A wrapper for functions in executables, with additions for blocks binary and disassembly and properties
-    for important stuff """
+    """A wrapper for functions in executables, with additions for blocks binary and disassembly and properties
+    for important stuff"""
 
     class Keys:
         name = "name"
@@ -30,7 +30,7 @@ class FunctionDescriptor(dict):
 
 
 class BlockDescriptor(dict):
-    """ A wrapper for blocks, with additions and properties for important stuff """
+    """A wrapper for blocks, with additions and properties for important stuff"""
 
     class Keys:
         address = "addr"
@@ -63,8 +63,8 @@ class BlockDescriptor(dict):
         self[self.Keys.binary] = value
 
 
-def disassmeble(filepath):
-    """ Disassmles an exe using radare2, :returns A dict {function address} -> {block address} """
+def disassemble(filepath):
+    """Disassembles a binary using radare2, :returns A dict {function address} -> {block address}"""
     r2 = r2pipe.open(filepath)
 
     r2.cmd("aaa")  # do an analysis to find functions
@@ -80,8 +80,10 @@ def disassmeble(filepath):
         print(f"Disassembling Function {function.name} ({function.size} bytes)")
 
         if function.size != int(function["realsz"]):
-            print(f"Function @{function.address} size is different from 'real size' "
-                  f"({function.size} != {function['realsz']})")
+            print(
+                f"Function @{function.address} size is different from 'real size' "
+                f"({function.size} != {function['realsz']})"
+            )
 
         overall_block_size, blocks = 0, {}
         while True:
@@ -89,12 +91,16 @@ def disassmeble(filepath):
             try:
                 block = BlockDescriptor(r2.cmdj("pdfj"))  # get block info
             except:
-                print(f"Couldn't get block info for block @{next_address} in function {function.name}, Stopping.")
+                print(
+                    f"Couldn't get block info for block @{next_address} in function {function.name}, Stopping."
+                )
                 break
 
             if next_address != block.address:
-                print(f"Discrepancy @function {function.name}, Seek to block {next_address}, "
-                      f"but block is at {block.address}. Stopping disassembly for this function")
+                print(
+                    f"Discrepancy @function {function.name}, Seek to block {next_address}, "
+                    f"but block is at {block.address}. Stopping disassembly for this function"
+                )
                 break
 
             overall_block_size += block.size
@@ -112,8 +118,10 @@ def disassmeble(filepath):
                 block.dsm += (int(o["offset"]), o["disasm"], int(o["size"]))
 
             if o["type"] == "invalid":
-                print(f"Invalid instruction @{block.address + int(o['offset'])} @ block {block.address} "
-                      f"@ function {function.name}. SKipping block")
+                print(
+                    f"Invalid instruction @{block.address + int(o['offset'])} @ block {block.address} "
+                    f"@ function {function.name}. Skipping block"
+                )
                 break
 
             blocks[block.address] = block
@@ -127,8 +135,10 @@ def disassmeble(filepath):
             break
 
         if overall_block_size < function["realsz"]:
-            print(f"Only {overall_block_size} bytes successfully disassembled out of {function.size} @ function "
-                  f"{function.name}")
+            print(
+                f"Only {overall_block_size} bytes successfully disassembled out of {function.size} @ function "
+                f"{function.name}"
+            )
         result[function.address] = blocks
 
     return result
@@ -137,4 +147,4 @@ def disassmeble(filepath):
 if len(sys.argv) != 2 or not os.path.isfile(sys.argv[1]):
     exit(f"python3 Usage: {sys.argv[0]} <path/to/exe>")
 
-disassmeble(sys.argv[1])
+disassemble(sys.argv[1])
